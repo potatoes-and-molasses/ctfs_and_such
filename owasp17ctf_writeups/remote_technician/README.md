@@ -7,7 +7,7 @@
 
 > The server ip is 34.215.112.21
 
-[TCPClient.exe](/TCPClient.exe)
+[TCPClient.exe](./TCPClient.exe)
 
 ## Story-time!
 
