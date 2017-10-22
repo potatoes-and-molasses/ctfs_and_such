@@ -19,7 +19,7 @@ Wireshark, up!
 
 Mysterious-executable-from-unknown-source-which-we-only-vaguely-trust, run!
 
-We saw the following data exchange with 34.215.112.21:5966:
+We saw the following data exchange with 34.215.112.21 on port 5966:
 
 ![TCP Stream](https://gyazo.com/7956868966c161499ac5d82a67bff0c7.png)
 
@@ -54,6 +54,7 @@ After a few more attempts...
 
 ![hurray!](https://gyazo.com/0587763f7a94063d5ff24952dea4b591.png)
 
+Yay:)
 
 
 
