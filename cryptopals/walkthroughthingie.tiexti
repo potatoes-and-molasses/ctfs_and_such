@@ -1,0 +1,246 @@
+Short intro: 
+
+this is a guide to the first few sets of the Cryptopals.com challenges with some hints and explanations for beginners. There will be some Python code and links to further reading resources, but no real prior knowledge is required, at least early on.
+You should try things yourself before looking at the solution, and obviously read the guidance in the challenge itself, they tend to have great explanations many times:)
+
+--Set 1--
+
+##Part 1
+
+http://cryptopals.com/sets/1/challenges/1
+
+In Python, strings have built-in methods for encoding/decoding, for example:
+
+print 'iWarnedYouAboutStairsBro'.encode('base64')
+print '69546f6c64596f75446f67'.decode('hex')
+
+If you aren't sure what hex encoding is, looking at our example above:
+'69546f6c64596f75446f67' is split into pairs ->
+['69', '54', '6f', '6c', '64', '59', '6f', '75', '44', '6f', '67']
+Every pair is evaluated as a hex number ->
+[105, 84, 111, 108, 100, 89, 111, 117, 68, 111, 103]
+And converted to a character with the respective value ->
+['i', 'T', 'o', 'l', 'd', 'Y', 'o', 'u', 'D', 'o', 'g']
+This was the decoding process, the encoding process is exactly the opposite, try it yourself if you didn't understand yet:)
+
+If you aren't sure what base64 encoding is:
+Let's say we want to encode the string 'abc'. 
+First, we take the value of each character ->
+[97,98,99]
+and show it in a 8digit binary representation ->
+[0b01100001,0b01100010,0b01100011]
+Now we concatenate the strings(without the 0b prefixes of course, that's just Python thingies!)
+'011000010110001001100011'
+And split them into groups of 6* ->
+['011000', '010110', '001001', '100011']
+Back to integers ->
+[24, 22, 9, 35]
+And now to create the final encoded string, assign values according to indexes in COOL ->
+COOL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+[COOL[24],COOL[22],COOL[9],COOL[35]]
+Which, unsurprisingly, is ->
+'YWJj', the same as 'abc'.encode('base64')
+
+And again, if you aren't entirely sure about all this yet, try doing the reverse process yourself.
+
+*NOTE: in this stage we depend on being able to divide it into groups of 6, but what if instead of 'abc', we would want to encode 'ab'?
+ hint - recall that pesky = or == you sometimes see in the end of base64 encoded strings, it's related, try to understand why:)
+
+//Solution:
+
+print '49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d'.decode('hex').encode('base64')
+
+##Part 2
+
+http://cryptopals.com/sets/1/challenges/2
+
+XOR(reminder, a XOR b is like "(a and not b) or (b and not a)") can be done between two integers in python via the ^ operator ->
+print 1 ^ 0
+print 123 ^ 56
+but not ->
+'a' ^ 'b'
+
+Let's write a function that xors strings!
+
+def xor(data,key):
+	return ''.join([chr(ord(data[i]) ^ ord(key[i])) for i in range(len(data))])
+
+//Solution:
+a='1c0111001f010100061a024b53535009181c'.decode('hex')
+b='686974207468652062756c6c277320657965'.decode('hex')
+print xor(a,b)
+
+##Part 3
+
+http://cryptopals.com/sets/1/challenges/3
+
+We'll start with their suggestion, letter frequency. This function returns the ratio of (english letters:string length) in the input.
+When we xor with the correct byte, we will presumably get the highest ratio(this isn't essentially the case, but it's a good assumption).
+
+import string
+def englishfreq(st):
+	return 1.0*len(filter(lambda x: x in string.ascii_letters, st))/len(st)
+
+//Solution:
+data = '1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736'.decode('hex')
+
+def solvesinglexor(secret):
+	opts = [(chr(i),xor(secret,chr(i)*len(secret))) for i in range(256)]
+	return max(opts,key=lambda x: englishfreq(x[1]))
+
+print solvesinglexor(data)
+
+##Part 4
+
+http://cryptopals.com/sets/1/challenges/4
+
+Just repeating Part3 multiple times and choosing the best result, easy enough?
+
+//Solution:
+data = urllib.urlopen('http://cryptopals.com/static/challenge-data/4.txt').read().split('\n')
+opts = map(lambda x: solvesinglexor(x.decode('hex')),data)
+print max(opts,key=lambda x: englishfreq(x[1]))
+
+Oh noes! it seems like our ratio checking isn't accurate enough, maybe we should try to allow a bit more letters in an "english" sentence, such as an apostrophe, comma, space... in order to make the correct decryption have a high ratio of "good" characters.
+
+redefining englishfreq as follows:
+
+def englishfreq(st):
+	return 1.0*len(filter(lambda x: x in string.ascii_letters+"',. ", st))/len(st) 
+
+and then...
+
+opts = map(lambda x: solvesinglexor(x.decode('hex')),data)
+print max(opts,key=lambda x: englishfreq(x[1]))
+
+hurray!
+
+##Part 5
+
+http://cryptopals.com/sets/1/challenges/5
+
+We just need to slightly modify our xor function for that, using modulo is very handy for that.
+
+//Solution:
+def xor(data,key):
+	l = len(key)
+	return ''.join([chr(ord(data[i]) ^ ord(key[i%l])) for i in range(len(data))])
+
+data='''Burning 'em, if you ain't quick and nimble
+I go crazy when I hear a cymbal'''
+print xor(data,'ICE').encode('hex')
+
+##Part 6
+
+First, hamming distance function. 
+
+def hammingdst(st1,st2):
+    return sum([len(filter(lambda x: x=='1',bin(ord(st1[i])^ord(st2[i])))) for i in range(len(st1))])
+
+Why is it even a good measure of anything? obviously it indicates a similarity, but there is some especially useful trait of this measure of distance! any guess why it might be useful for finding the key length?
+
+hint - we saw that the Hamming distance between "this is a test" and "wokka wokka!!!" was 37. Note that this is also the distance between xor("wokka wokka!!!","a") and xor("this is a test","a").
+
+
+//Solution:
+import itertools
+data = urllib.urlopen('http://cryptopals.com/static/challenge-data/6.txt').read().decode('base64')
+opts = []
+for i in range(2,40):
+	blocks = [data[j*i:(j+1)*i] for j in range(0,4)]
+	itr = itertools.combinations(blocks,2)
+	s = 0
+	for pair in itr:
+		s += hammingdst(pair[0],pair[1])*1.0/i
+	opts.append((s,i))
+	
+print sorted(opts,key=lambda x: x[0]) 
+#now we have the key size(probably, if the first won't come up nicely we can try some more low-distance options). Following the steps they suggest ->
+splits = [data[j::29] for j in range(29)]
+key=''.join(solvesinglexor(i)[0] for i in splits)
+print key
+print xor(data,key)
+
+##Part7
+
+We are going to use pycrypto for all our cryptographic needs:) this is not a built-in module, so download it if you don't have it already.
+The ECB encryption mode is very simple, we just split our plaintext into blocks of 16 bytes, and encrypt each of them separately.
+
+//Solution:
+from Crypto.Cipher import AES
+enc = AES.new('YELLOW SUBMARINE',AES.MODE_ECB)
+print enc.decrypt(urllib.urlopen('http://cryptopals.com/static/challenge-data/7.txt').read().decode('base64'))
+
+##Part8
+Here we are going to use the fact that it is extremely unlikely for a block to appear more than once when using encryption modes that aren't ECB.
+
+def hasrepeats(data):
+    blocks = {}
+    for j in range(0,len(data),16):
+        currentblock = data[j:j+16]
+        if currentblock in blocks:
+            blocks[currentblock]+=1
+        else:
+            blocks[currentblock]=1
+            
+    if len(set(blocks.values()))>1: 
+        return 1
+    return 0
+
+for i in ciphers:
+	if hasrepeats(i):
+		print i
+		
+--Set 2--
+
+##Part1
+
+http://www.cryptopals.com/sets/2/challenges/9
+
+Not much to say... padding is simple:)
+
+//Solution:
+def pkcs7(data,blocksize):
+	l = (blocksize-len(data)%blocksize) % blocksize
+	return data+l*chr(l)
+
+##Part2
+
+http://www.cryptopals.com/sets/2/challenges/10
+
+Using our ECB encryptor/decryptor from earlier and some xoring, we get a CBC mode encryptor/decryptor, yay:)
+Again there's not much to say, this is just following instructions on the page:)
+
+def mycbcdec(data,iv,key):
+	res=''
+	enc = AES.new(key,AES.MODE_ECB)
+	data=iv+data
+	for i in range(16,len(data),16):
+		res += xor(enc.decrypt(data[i:i+16]),data[i-16:i])
+		
+	return res
+	
+def mycbcenc(data,iv,key):
+        res=''
+        st = pkcs7(data,16)
+        enc = AES.new(key,AES.MODE_ECB)
+        for i in range(0,len(st),16):
+            iv = enc.encrypt(xor(st[i:i+16],iv))
+            res+=iv
+        return res
+		
+##Part3
+
+http://www.cryptopals.com/sets/2/challenges/11
+
+2becontinued when im less lazy:D
+I have my solutions of up to set 5, but they are mostly a mess and need to be rewritten in order to be somewhat comprehensible.
+
+Are things clear mostly clear? do they need more explanations? 
+
+
+
+
+
+
+
