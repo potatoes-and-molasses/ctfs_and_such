@@ -21,18 +21,18 @@ As you can see from the file system paths disclosed by this nice and informative
 
 ![](https://gyazo.com/573a56c0ac39333d3d744bb12b708b33)
 
-```
-* www.superwebhosting.xyz
-* networktoolkit.admin.superwebhosting.xyz
-* older.sublist3r.versions.work.better.for.superwebhosting.xyz
+
+- www.superwebhosting.xyz
+- networktoolkit.admin.superwebhosting.xyz
+- older.sublist3r.versions.work.better.for.superwebhosting.xyz
 
 We already knew the first one(duh!), and the third one appears to be dead, but the second one brings us to some sort of admin panel!
 
 The three availble commands:
 
-* Ping(/ping.do) - pings a host to see if it's alive, returns alive/dead status.
-* DNS lookup(/dnssearch.do) - looks like output of the dig command, so it probably is exactly that^^
-* Tracert(/trace.do) - traces the route to a host, shows every hop along the path.
+- Ping(/ping.do) - pings a host to see if it's alive, returns alive/dead status.
+- DNS lookup(/dnssearch.do) - looks like output of the dig command, so it probably is exactly that^^
+- Tracert(/trace.do) - traces the route to a host, shows every hop along the path.
 
 The first thing we tried is to pull off some command injection or at least inject some parameters to the commands used, but things seemed well-handled and every try along those lines resulted in something like this:
 
