@@ -13,7 +13,7 @@
 
 We started out by giving the binary a quick look in IDA, just to get the general idea of what it's supposed to do. Unsurprisingly(after all, it was named tcpclient..), it seemed to mostly just send and receive some data over tcp.
 
-[Brief look in IDA](https://gyazo.com/e30ae7b27331a02f087487e957d594f5.png)
+![Brief look in IDA](https://gyazo.com/e30ae7b27331a02f087487e957d594f5.png)
 
 Wireshark, up!
 
@@ -21,7 +21,7 @@ Mysterious-executable-from-unknown-source-which-we-only-vaguely-trust, run!
 
 We saw the following data exchange with 34.215.112.21:5966:
 
-[TCP Stream](https://gyazo.com/7956868966c161499ac5d82a67bff0c7.png)
+![TCP Stream](https://gyazo.com/7956868966c161499ac5d82a67bff0c7.png)
 
 ```alive_packet = 'CMD: \x01\x01\x01\x05alive'```
 
@@ -46,13 +46,13 @@ def sendp(cmd):
 
 It seems that our theory was correct, but unfortunately, some of the commands are not allowed!
 
-[some commands are filtered](https://gyazo.com/0c0ce84905ce728f3800cbc2b7814d13.png)
+![some commands are filtered](https://gyazo.com/0c0ce84905ce728f3800cbc2b7814d13.png)
 
 So now we just need to find a bypass for this and somehow read flag.
 
 After a few more attempts...
 
-[hurray!](https://gyazo.com/0587763f7a94063d5ff24952dea4b591.png)
+![hurray!](https://gyazo.com/0587763f7a94063d5ff24952dea4b591.png)
 
 
 
