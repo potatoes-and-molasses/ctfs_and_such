@@ -27,7 +27,7 @@ We saw the following data exchange with 34.215.112.21 on port 5966:
 alive_packet = 'CMD: \x01\x01\x01\x05alive'
 ```
 
-When we tried to resend the data while modifying the parameters a little, we noticed that while changing most of the things didn't really matter, changing \x05 actually made the "alive" command fail. Since alive is 5 bytes long we assumed that this byte indicates the length of the command that follows.
+When we tried to resend the data while modifying the parameters a little, we noticed that while changing most of the things didn't really matter, changing \x05 actually made the "alive" command fail. Since "alive" is 5 bytes long we assumed that this byte indicates the length of the command that follows.
 
 Testing the theory with some other commands:
 
