@@ -26,7 +26,7 @@ As you can see from the file system paths disclosed by this nice and informative
 - networktoolkit.admin.superwebhosting.xyz
 - older.sublist3r.versions.work.better.for.superwebhosting.xyz
 
-We already knew the first one(duh!), and the third one appears to be dead, but the second one brings us to some sort of admin panel.
+We already knew the first one(duh!), and the third one appears to be dead, but the second one brings us to some sort of admin panel:
 
 ![](https://gyazo.com/403012ceea6712c77a6ba0af844f020b.png)
 
