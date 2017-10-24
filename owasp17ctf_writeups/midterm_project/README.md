@@ -13,7 +13,7 @@
 
 ## Story-time!
 
-We started browsing site and one of the first things we tried was checking for an /admin page(due to some of the previous challenges we did here having such a page).
+We started browsing the site and one of the first things we tried was checking for an /admin page(due to some of the previous challenges we did here having such a page).
 
 ![](https://gyazo.com/40419f1b853f9212e26477a63cfd4de7.png)
 
