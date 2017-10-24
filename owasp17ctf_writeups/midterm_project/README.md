@@ -42,7 +42,7 @@ The first thing we tried is to pull off some command injection or at least injec
 
 (we tried that direction for quite a while, because "don't try to hack us" seemed pretty encouraging^^)
 
-Anyway... fast forward to the more interesting parts! one of the other things we noticed pretty early on was that /dnssearch.do receives two extra parameters apart from the one supplied on the web page:
+Anyway... fast forward to the more interesting parts! one of the other things we noticed pretty early on was that /dnssearch.do receives two extra parameters in addition to the one supplied on the web page:
 
 ![](https://gyazo.com/fa44a4dbe8428cf56db2b8008a79b196.png)
 
